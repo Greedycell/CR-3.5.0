@@ -3,13 +3,18 @@ const MessageFactory = require('./Protocol/MessageFactory')
 const server = new net.Server()
 const Messages = new MessageFactory()
 const config = require('./config.json')
-const PORT = config.Port
+const PORT = config.Server.Port
 
 server.on('connection', async (client) => {
   client.setNoDelay(true)
   client.log = function (text) {
-    if (config.Debug) {
-      return console.log(`[${this.remoteAddress.split(':').slice(-1)}] >> ${text}`)
+    if (config.Server.Debug) {
+      if (config.Server.StreamerMode) {
+        return console.log(`[*] >> ${text}`)
+      } 
+      else {
+        return console.log(`[${this.remoteAddress.split(':').slice(-1)}] >> ${text}`)
+      }
     }
     else
     {
@@ -34,7 +39,7 @@ server.on('connection', async (client) => {
       try {
         const packet = new (Messages.handle(message.id))(message.payload, client)
 
-        if (config.Debug) {
+        if (config.Server.Debug) {
           client.log(`Gotcha ${message.id} (${packet.constructor.name}) packet! `)
         }
 

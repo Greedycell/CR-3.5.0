@@ -1,4 +1,7 @@
 {
-    "Port": 9339,
-    "Debug": false
+    "Server": {
+        "Port": 9339,
+        "Debug": true,
+        "StreamerMode": true
+    }
 }
